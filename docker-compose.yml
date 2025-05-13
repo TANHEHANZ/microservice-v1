@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+  auth-service:
+    container_name: firma_gamc_auth
+    build:
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - firma_gamc_network
+    depends_on:
+      - redis
+  redis:
+    image: redis:latest
+    container_name: firma_gamc_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - firma_gamc_network
+    command:
+      ["redis-server", "--appendonly", "yes", "--requirepass", "GAMC2025DHT"]
+networks:
+  firma_gamc_network:
+    name: firma_gamc_network
+    driver: bridge

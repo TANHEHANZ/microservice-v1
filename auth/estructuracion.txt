@@ -1,0 +1,57 @@
+# Arquitectura del Servicio de Autenticación
+
+## Componentes Principales
+
+### 1. Gestión de Usuarios
+- Registro y gestión de perfiles de usuario
+- Asignación de roles
+- Seguimiento de estado de cuenta (activo/inactivo/bloqueado)
+- Gestión y recuperación de contraseñas
+
+### 2. Registro de Sistemas
+- Registro de sistemas/aplicaciones cliente
+- Configuraciones específicas por sistema
+- Gestión de credenciales API
+- Control de acceso por sistema
+
+### 3. Flujo de Autenticación
+1. **Autenticación Inicial**
+   - Login de usuario con credenciales
+   - Generación de tokens (JWT)
+   - Gestión de sesiones
+   - Manejo de tokens de actualización
+
+2. **Autorización**
+   - Control de acceso basado en roles (RBAC)
+   - Validación de permisos
+   - Verificación de acceso al sistema
+   - Validación de tokens
+
+### 4. Capa de Integración
+- API Gateway para acceso centralizado
+- Kafka para manejo de eventos
+- Comunicación entre microservicios
+- Módulo compartido para funcionalidad común
+
+## Características Principales
+
+1. **Autenticación Centralizada**
+   - Inicio de sesión único (SSO)
+   - Directorio unificado de usuarios
+   - Políticas de acceso centralizadas
+
+2. **Seguridad**
+   - Autenticación basada en JWT
+   - Permisos basados en roles
+   - Gestión de sesiones
+   - Registro de auditoría
+
+3. **Gestión de Sistemas**
+   - Soporte multi-sistema
+   - Configuraciones específicas por sistema
+   - Control de acceso API
+
+
+
+// par aligrado de datos podemos usar elastic Search 
+una heramienta que nos ayuda a buscar o filtrar rapido y eficiente 

@@ -1,0 +1,23 @@
+ .env
+**/.env
+**/node_modules/
+# Private Keys
+*.pem
+master_private.pem
+master_public.pem
+# manejo de logs 
+**/logs
+**/*.log
+**/npm-debug-log*
+
+# manejo de Builds 
+**/dist
+**/Build
+
+# manejo de archivos temporales 
+**/.tmp
+**/temp
+
+# manejo de packetes especificos
+**/package-lock.json
+**/yarn.lock
