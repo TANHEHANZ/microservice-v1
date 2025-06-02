@@ -1,0 +1,33 @@
+{
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  },
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "rootDir": "../../",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": "./src",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "paths": {
+      "@shared/*": ["../../shared/*"],
+      "@/*": ["./*"],
+      "@lib/*": ["infraestructure/lib/*"],
+      "@infraestructure/*": ["infraestructure/*"],
+      "@modules/*": ["modules/*"]
+    },
+    "moduleResolution": "node",
+    "resolveJsonModule": true
+  },
+  "files": [
+    "src/infraestructure/global.d.ts"
+  ],
+  "include": ["./src/**/*", "../../shared/**/*", "prisma/seeder"],
+  "exclude": ["node_modules", "dist"]
+}
