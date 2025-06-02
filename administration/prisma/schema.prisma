@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum StatusEnum {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  SUSPENDED
+  DEACTIVATED
+  PENDING_VERIFICATION
+  PASSWORD_EXPIRED
+  LOCKED
+  DELETED
+  EXTERNAL
+  ARCHIVED
+}
+
+model Permissons {
+  id                String            @id @default(uuid())
+  name              String            @unique
+  description       String?
+  status            StatusEnum        @default(ACTIVE)
+  s_ConfigurationId String?
+  S_Configuration   S_Configuration[]
+
+  @@index([name], name: "idx_permissons_name")
+  @@map("permissons")
+}
+
+model Service {
+  id                String          @id @default(cuid())
+  name              String
+  description       String
+  icon              String
+  s_tipo            S_tipo?         @relation(fields: [s_tipoId], references: [id])
+  s_tipoId          String?
+  s_configuration   S_Configuration @relation(fields: [s_configurationId], references: [id])
+  s_configurationId String
+  s_grupo           S_Grupo?        @relation(fields: [s_grupoId], references: [id])
+  s_grupoId         String?
+
+  status    StatusEnum @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model S_Grupo {
+  id      String     @id @default(cuid())
+  name    String
+  status  StatusEnum @default(ACTIVE)
+  Service Service[]
+}
+
+model S_Configuration {
+  id         String       @id @default(cuid())
+  permissons Permissons[]
+  Service    Service[]
+}
+
+model S_tipo {
+  id          String    @id @default(cuid())
+  name        String
+  description String
+  icon        String
+  Service     Service[]
+}
