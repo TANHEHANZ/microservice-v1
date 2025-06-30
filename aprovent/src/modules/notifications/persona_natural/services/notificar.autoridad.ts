@@ -1,60 +1,75 @@
 import {
-  cifrarAES,
-  cifrarClaveConRSA,
-  generarIvYClave,
+  encriptarRSA,
+  encriptarSimetricoDatos,
+  LlaveSimetricoEntidad,
 } from "@/infraestructure/utils/aes-encryption.util";
-import { calcularSha256 } from "@/infraestructure/utils/hash.util";
-import http from "@/infraestructure/utils/http-client";
+import { generarClaveYIV } from "@/infraestructure/utils/crypto.util";
+import {
+  autoridad,
+  Enlaces,
+  FormNotificacion,
+  getNotificadosRaw,
+  notificador,
+} from "../mocks";
+import {
+  DTO_MainNotification,
+  DTO_NotificationNatural,
+} from "../validators/v_notification";
+import {
+  generarSHA,
+  generarSHA256,
+  obtenerHashArchivo,
+} from "@/infraestructure/utils/sha256";
+import config from "@/infraestructure/config/config";
 
-export const enviarNotificacion = async (data: any) => {
-  try {
-    const { clave, iv } = generarIvYClave();
+export const enviarNotificacion = async () => {
+  const { clave, iv } = generarClaveYIV();
 
-    const notificadorPayload = {
-      numeroDocumento: "8369155",
-      fechaNacimiento: "2001-01-04",
-      tipoDocumento: "CI",
-    };
-    const notificadorEncriptado = cifrarAES(
-      JSON.stringify(notificadorPayload),
-      clave,
-      iv
-    );
+  const llaveSimetricaCifrada = encriptarRSA(clave, config.PEM);
+  const ivCifrado = encriptarRSA(iv, config.PEM);
+  const claveSimetrica: LlaveSimetricoEntidad = {
+    llaveAES: clave,
+    ivAES: iv,
+  };
+  const hash = obtenerHashArchivo("codigoLimpio.pdf");
+  console.log("Hash SHA-256:", hash);
 
-    const notificacion = {
-      titulo: cifrarAES("Título de prueba", clave, iv),
-      descripcion: cifrarAES("Mensaje de prueba", clave, iv),
-      notificador: notificadorEncriptado,
-      notificados: [notificadorEncriptado],
-      formularioNotificacion: {
-        etiqueta: "form-prueba",
-        url: cifrarAES("https://midocumento.pdf", clave, iv),
-        tipo: "APROBACION",
-        hash: cifrarAES("HASH_DOCUMENTO", clave, iv),
-      },
-      datosAdicionalesEntidad: [{ clave: "proceso", valor: "penal" }],
-      enlaces: [],
-    };
-    const llaveSimetricaCifrada = cifrarClaveConRSA(clave);
-    const ivCifrada = cifrarClaveConRSA(iv);
+  const E_notificados = getNotificadosRaw().map((item) =>
+    encriptarSimetricoDatos(item, claveSimetrica)
+  );
 
-    const body = {
-      notificacion,
-      seguridad: {
-        llaveSimetrica: llaveSimetricaCifrada,
-        iv: ivCifrada,
-      },
-      sha256: calcularSha256(notificacion),
-    };
-    console.log(JSON.stringify(body, null, 2));
+  const E_enlaces = Enlaces.map((item) => ({
+    ...item,
+    hash: generarSHA(item.url),
+    url: encriptarSimetricoDatos(item.url, claveSimetrica),
+  }));
 
-    const response = await http.post("/notificacion/natural", body);
-    return response.data;
-  } catch (error: any) {
-    throw {
-      mensaje: "Fallo al enviar la notificación a Ciudadanía Digital",
-      detalle: error.response?.data || error.message || error,
-      status: error.status || 500,
-    };
-  }
+  const E_formularioNotificacion = {
+    ...FormNotificacion,
+    hash: generarSHA(FormNotificacion.url),
+    url: encriptarSimetricoDatos(FormNotificacion.url, claveSimetrica),
+  };
+  const E_autoridad = encriptarSimetricoDatos(autoridad, claveSimetrica);
+  const E_notificador = encriptarSimetricoDatos(notificador, claveSimetrica);
+  const E_descripcion = encriptarSimetricoDatos("prueba", claveSimetrica);
+  const notificacion: DTO_NotificationNatural = {
+    titulo: "Prueba 01",
+    autoridad: E_autoridad,
+    descripcion: E_descripcion,
+    notificador: E_notificador,
+    notificados: E_notificados,
+    enlaces: E_enlaces,
+    formularioNotificacion: E_formularioNotificacion,
+  };
+  const sha = generarSHA256(notificacion);
+  const formatData: DTO_MainNotification = {
+    notificacion,
+    seguridad: {
+      iv: ivCifrado,
+      llaveSimetrica: llaveSimetricaCifrada,
+    },
+    sha256: sha,
+  };
+  console.log("📦 Notificación generada:");
+  console.log(JSON.stringify(formatData, null, 2));
 };

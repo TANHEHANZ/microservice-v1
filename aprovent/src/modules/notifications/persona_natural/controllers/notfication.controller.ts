@@ -7,7 +7,7 @@ export const enviarNotificacionController = async (
   res: Response
 ) => {
   try {
-    const result = await enviarNotificacion(req.body);
+    const result = await enviarNotificacion();
     API.success(res, "Notificación enviada correctamente", result);
   } catch (error: any) {
     console.error("❌ Error al enviar notificación:", error);
