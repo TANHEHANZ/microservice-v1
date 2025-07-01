@@ -23,6 +23,3 @@ export function obtenerHashArchivo(nombreArchivo: string) {
   const data = fs.readFileSync(rutaArchivo);
   return createHash("sha256").update(data).digest("hex");
 }
-
-const hash = obtenerHashArchivo("codigoLimpio.pdf");
-console.log("Hash SHA-256:", hash);

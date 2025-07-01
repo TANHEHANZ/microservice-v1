@@ -1,0 +1,49 @@
+# --- Archivos sensibles ---
+# Claves privadas/certificados (como AUTH.pem)
+/src/.infra/key/
+*.pem
+*.key
+*.cer
+*.crt
+*.pfx
+
+# Variables de entorno
+.env
+.env.local
+.env*.local
+
+# --- Dependencias / Build ---
+node_modules/
+dist/
+build/
+*.exe
+*.msi
+
+# --- Logs y caché ---
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.cache/
+
+# --- Editor/IDE ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sublime-workspace
+
+# --- Sistema operativo ---
+.DS_Store
+Thumbs.db
+
+# --- Testing / Coverage ---
+coverage/
+.nyc_output/
+
+# --- Misceláneos ---
+*.tmp
+*.bak
+*.patch

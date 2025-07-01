@@ -25,15 +25,14 @@ import config from "@/infraestructure/config/config";
 export const enviarNotificacion = async () => {
   const { clave, iv } = generarClaveYIV();
 
-  const llaveSimetricaCifrada = encriptarRSA(clave, config.PEM);
-  const ivCifrado = encriptarRSA(iv, config.PEM);
+  const llaveSimetricaCifrada = encriptarRSA(clave, config.PEM.NOTIFICATION);
+  const ivCifrado = encriptarRSA(iv, config.PEM.NOTIFICATION);
   const claveSimetrica: LlaveSimetricoEntidad = {
     llaveAES: clave,
     ivAES: iv,
   };
   const hash = obtenerHashArchivo("codigoLimpio.pdf");
-  console.log("Hash SHA-256:", hash);
-
+  console.log("documento Hash", hash);
   const E_notificados = getNotificadosRaw().map((item) =>
     encriptarSimetricoDatos(item, claveSimetrica)
   );
@@ -46,7 +45,6 @@ export const enviarNotificacion = async () => {
 
   const E_formularioNotificacion = {
     ...FormNotificacion,
-    hash: generarSHA(FormNotificacion.url),
     url: encriptarSimetricoDatos(FormNotificacion.url, claveSimetrica),
   };
   const E_autoridad = encriptarSimetricoDatos(autoridad, claveSimetrica);

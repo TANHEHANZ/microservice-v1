@@ -33,8 +33,8 @@ export const Enlaces: DTO_nEnlaces = [
 ];
 export const FormNotificacion: DTO_nFormulario = {
   url: "https://elhacker.info/manuales/Lenguajes%20de%20Programacion/Codigo%20limpio%20-%20Robert%20Cecil%20Martin.pdf",
-  etiqueta: "Form de prueba",
-  hash: "",
+  etiqueta: "Documento de prueba",
+  hash: "23ec584b7df618b7c50fff5bca1f5f2a084cfcec881087ce651bc57a87632cbe",
   tipo: "APROBACION",
 };
 
