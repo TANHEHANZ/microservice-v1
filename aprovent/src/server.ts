@@ -14,17 +14,6 @@ export const createServer = () => {
     .use(express.json())
     .use(cors())
     .use(cookieParser())
-    .use(
-      "/static",
-      express.static(path.join(__dirname, "public"), {
-        maxAge: "1d",
-        etag: true,
-        lastModified: true,
-        index: false,
-        dotfiles: "ignore",
-        immutable: true,
-      })
-    )
     .use("/v1/api/", router);
 
   app.get("/", (req: Request, res: Response) => {
