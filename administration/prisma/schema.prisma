@@ -7,66 +7,143 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum StatusEnum {
-  ACTIVE
-  INACTIVE
-  BLOCKED
-  SUSPENDED
-  DEACTIVATED
-  PENDING_VERIFICATION
-  PASSWORD_EXPIRED
-  LOCKED
-  DELETED
-  EXTERNAL
-  ARCHIVED
+enum Role {
+  ADMIN
+  CLIENT
+  USER
 }
 
-model Permissons {
-  id                String            @id @default(uuid())
-  name              String            @unique
-  description       String?
-  status            StatusEnum        @default(ACTIVE)
-  s_ConfigurationId String?
-  S_Configuration   S_Configuration[]
-
-  @@index([name], name: "idx_permissons_name")
-  @@map("permissons")
+enum status {
+  ACTIVO
+  INACTIVO
+  BLOQUEADO
+  SUSPENDIDO
+  DESACTIVADO
+  PENDIENTE
+  EXPIRADO
+  ELIMINADO
 }
 
-model Service {
-  id                String          @id @default(cuid())
-  name              String
-  description       String
-  icon              String
-  s_tipo            S_tipo?         @relation(fields: [s_tipoId], references: [id])
-  s_tipoId          String?
-  s_configuration   S_Configuration @relation(fields: [s_configurationId], references: [id])
-  s_configurationId String
-  s_grupo           S_Grupo?        @relation(fields: [s_grupoId], references: [id])
-  s_grupoId         String?
-
-  status    StatusEnum @default(ACTIVE)
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+//  Opcional
+model nav {
+  id       String  @id @default(uuid())
+  name     String
+  path     String
+  icon     String
+  color    String?
+  Status   status  @default(ACTIVO)
+  parentId String?
+  parent   nav?    @relation("ParentChild", fields: [parentId], references: [id])
+  children nav[]   @relation("ParentChild")
 }
 
-model S_Grupo {
-  id      String     @id @default(cuid())
-  name    String
-  status  StatusEnum @default(ACTIVE)
-  Service Service[]
+model user {
+  id           String           @id @default(cuid())
+  name         String?
+  ci           String?          @unique
+  email        String?          @unique
+  googleId     String?          @unique
+  rol          Role             @default(USER)
+  id_method    String
+  method       u_method         @relation(fields: [id_method], references: [id])
+  dispositivos u_dispositivos[]
+  permissions  String[]
+
+  status   status     @default(ACTIVO)
+  Aprovals Aprovals[]
 }
 
-model S_Configuration {
-  id         String       @id @default(cuid())
-  permissons Permissons[]
-  Service    Service[]
+model u_dispositivos {
+  id         String  @id @default(uuid())
+  ip         String
+  userId     String
+  confianza  Boolean @default(false)
+  userAgent  String?
+  location   String?
+  user       user    @relation(fields: [userId], references: [id])
+  deviceType String?
+
+  status     status   @default(ACTIVO)
+  lastAccess DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
 
-model S_tipo {
-  id          String    @id @default(cuid())
+model u_method {
+  id           String  @id @default(cuid())
+  name         String
+  accesToken   String?
+  refreshToken String?
+  dataMethod   Json?
+
+  status status @default(ACTIVO)
+  User   user[]
+}
+
+model u_OAuth {
+  id            String   @id @default(uuid())
+  client_id     String?  @unique
+  client_secret String?
+  name          String
+  description   String?
+  redirect_uris String[]
+  webhook_url   String?
+  domain        String?
+
+  status      status         @default(ACTIVO)
+  created_at  DateTime       @default(now())
+  updated_at  DateTime?      @updatedAt
+  ClientScope client_scope[]
+
+  @@map("oauth_clients")
+}
+
+model scope {
+  id          String         @id @default(uuid())
+  name        String         @unique
+  description String?
+  permissions String[]
+  status      status         @default(ACTIVO)
+  ClientScope client_scope[]
+}
+
+model client_scope {
+  clientId String
+  scopeId  String
+
+  client u_OAuth @relation(fields: [clientId], references: [id])
+  scope  scope   @relation(fields: [scopeId], references: [id])
+
+  @@id([clientId, scopeId])
+  @@map("oauth_client_scopes")
+}
+
+// servicios
+model service {
+  id          String   @id @default(cuid())
   name        String
   description String
   icon        String
-  Service     Service[]
+  color       String
+  config      Json
+  status      status   @default(ACTIVO)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
+
+//  olther method
+// CD = ciudadania digital
+model Aprovals {
+  id            String @id @default(cuid())
+  idTramite     String @unique
+  type          String
+  urlDocumento  String
+  hashDocumento String
+  description   String
+  CD_token      String
+  userId        String
+  user          user   @relation(fields: [userId], references: [id])
+
+  status status @default(ACTIVO)
+}
+
+//   para notificaciones debo obtener el hash del documeto 
