@@ -39,7 +39,7 @@ export const enviarNotificacion = async () => {
 
   const E_enlaces = Enlaces.map((item) => ({
     ...item,
-    hash: generarSHA(item.url),
+    // hash: generarSHA(item.url),
     url: encriptarSimetricoDatos(item.url, claveSimetrica),
   }));
 

@@ -25,19 +25,26 @@ const dataAutoridad: DTO_nAutoridad = {
 };
 export const Enlaces: DTO_nEnlaces = [
   {
-    url: "https://elhacker.info/manuales/Lenguajes%20de%20Programacion/Codigo%20limpio%20-%20Robert%20Cecil%20Martin.pdf",
-    etiqueta: "Documento de prueba",
-    hash: "",
+    url: "https://repositoriogamcdev.cochabamba.bo/repositorio_ddsi/presupuesto/mock_sist_planif_presup_V2_(1)_a85aac0e-f139-4a5d-8a99-e592060349d7.pdf",
+    etiqueta:
+      "Enlace de prueba con hash del documento antes de subir al repositorio",
+    hash: "0920eac8e9951a46416f4f0592346a0641fedd2c6eccce5644223b2af5a79317",
     tipo: "APROBACION",
   },
 ];
+// export const FormNotificacion: DTO_nFormulario = {
+//   url: "https://aprobador.ciudadania.demo.agetic.gob.bo/solicitudes/602042df-e315-469d-922d-f90ce3c46362",
+//   etiqueta: "Documento subido con aprovaciones con el id del notificador",
+//   hash: "23ec584b7df618b7c50fff5bca1f5f2a084cfcec881087ce651bc57a87632cbe",
+//   tipo: "APROBACION",
+// };
+
 export const FormNotificacion: DTO_nFormulario = {
-  url: "https://elhacker.info/manuales/Lenguajes%20de%20Programacion/Codigo%20limpio%20-%20Robert%20Cecil%20Martin.pdf",
-  etiqueta: "Documento de prueba",
-  hash: "23ec584b7df618b7c50fff5bca1f5f2a084cfcec881087ce651bc57a87632cbe",
+  url: "https://repositoriogamcdev.cochabamba.bo/repositorio_ddsi/presupuesto/mock_sist_planif_presup_V2_(1)_a85aac0e-f139-4a5d-8a99-e592060349d7.pdf",
+  etiqueta: "Enlace de prueba ya fue subido para aprovar",
+  hash: "0920eac8e9951a46416f4f0592346a0641fedd2c6eccce5644223b2af5a79317",
   tipo: "APROBACION",
 };
-
 export const notificador: string = JSON.stringify(dataNotifcador);
 export const autoridad: string = JSON.stringify(dataAutoridad);
 

@@ -47,3 +47,4 @@ coverage/
 *.tmp
 *.bak
 *.patch
+/generated/prisma

@@ -17,6 +17,12 @@ export function generarSHA(data: string): string {
   return crypto.createHash("sha256").update(data).digest("hex");
 }
 
+export const generarSHAFile = async (
+  file: Express.Multer.File
+): Promise<string> => {
+  return createHash("sha256").update(file.buffer).digest("hex");
+};
+
 export function obtenerHashArchivo(nombreArchivo: string) {
   const rutaArchivo = path.resolve(__dirname, "../../upload", nombreArchivo);
 
